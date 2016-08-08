@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+{% block body %}
+<div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Add new employee</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Employee information
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label>Employee name</label>
+                                            <input class="form-control" placeholder="Chinese"><br>
+                                            <input class="form-control" placeholder="English">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>ID number</label>
+                                            <input class="form-control" placeholder="ID number">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Address</label>
+                                            <input class="form-control" placeholder="Address">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Phone number</label>
+                                            <input class="form-control" placeholder="Home"><br>
+                                            <input class="form-control" placeholder="Mobile">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input type="text" class="form-control" placeholder="Expected salary">
+                                            <span class="input-group-addon">.00</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input class="form-control" placeholder="Title">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Marriage status</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios" id="single" value="single">Single
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios" id="married" value="married">Married
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gender</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios2" id="male" value="male">Male
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios2" id="female" value="female">Female
+                                            </label>
+                                        </div>
+                                         <div class="form-group">
+                                            <label>Employment type</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="daily" value="daily">Daily
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="monthly" value="monthly">Monthly
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Remarks</label>
+                                            <textarea class="form-control" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Contract copy</label>
+                                            <input type="file">
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                        <button type="reset" class="btn btn-warning">Reset</button>
+                                    </form>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+{% endblock %}
