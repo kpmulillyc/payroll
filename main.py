@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request,jsonify
+import uniout
 
 app = Flask(__name__)
 
@@ -58,6 +59,23 @@ def tables():
 def typography():
     return render_template("typography.html")
 
+@app.route('/addEmployee')
+def addEmployee():
+    gender = request.args.get('gender')
+    marriage = request.args.get('marriage')
+    type = request.args.get('type')
+    idnum = request.args.get('idnum')
+    chinese = request.args.get('chinese')
+    english = request.args.get('english')
+    address = request.args.get('address')
+    home = request.args.get('home')
+    mobile = request.args.get('mobile')
+    salary = request.args.get('salary')
+    title = request.args.get('title')
+    remarks = request.args.get('remarks')
+    print (gender,marriage,type,idnum,chinese,english,address,home,mobile,salary,title,remarks)
+    return jsonify(data="hello r")
+
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
