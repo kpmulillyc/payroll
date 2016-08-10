@@ -62,8 +62,11 @@
                                                 <input type="radio" name="optionsRadios2" id="female" value="female">Female
                                             </label>
                                         </div>
-                                         <div class="form-group">
+                                        <div class="form-group">
                                             <label>Employment type</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="hourly" value="hourly">Hourly
+                                            </label>
                                             <label class="radio-inline">
                                                 <input type="radio" name="optionsRadios3" id="daily" value="daily">Daily
                                             </label>
@@ -71,6 +74,21 @@
                                                 <input type="radio" name="optionsRadios3" id="monthly" value="monthly">Monthly
                                             </label>
                                         </div>
+                                        <div class="form-group">
+                                        <label>Employment Date: </label><input type="text" id="datepicker">
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Probation</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsPro" id="no" value="no">No
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsPro" id="yes" value="yes">Yes
+                                            </label>
+                                            <div id="pro">
+                                            <input type="text" size="2"> days <input type="text" size="2"> months
+                                        </div>
+                                            </div>
                                         <div class="form-group">
                                             <label>Remarks</label>
                                             <textarea class="form-control" id="remarks" rows="3"></textarea>

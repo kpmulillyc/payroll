@@ -17,3 +17,24 @@ $(function(){
             });
         });
     });
+
+  $( function() {
+    $( "#datepicker" ).datepicker({
+	  changeMonth: true,
+      changeYear: true,
+      showOn: "button",
+      buttonImage: "../static/img/calendar.gif",
+      buttonImageOnly: true,
+      buttonText: "Select date"
+    });
+  } );
+
+  $(function(){
+	$("#pro").hide();
+		$('#yes').click(function(){
+	 	$("#pro").show();
+	 	});
+	 	$('#no').click(function(){
+	 	$("#pro").hide();
+	 	});
+  });
