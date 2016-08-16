@@ -1,7 +1,53 @@
-from flask import Flask, render_template,request,jsonify
+from flask import Flask, render_template,request,jsonify,url_for
+from flask_sqlalchemy import SQLAlchemy
 import uniout
+from datetime import datetime
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:kingsford@localhost/payroll?charset=utf8'
+db=SQLAlchemy(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+class employee(db.Model):
+    __tablename__ = 'employee'
+    id = db.Column(db.Integer, primary_key=True)
+    cname = db.Column(db.String(50,collation = 'utf8_bin'))
+    ename = db.Column(db.String(50))
+    hkid = db.Column(db.String(20), unique = True)
+    address = db.Column(db.String(100))
+    phoneM = db.Column(db.Integer)
+    phoneH = db.Column(db.Integer)
+    salary = db.Column(db.Float)
+    title = db.Column(db.String(20))
+    '''married 1 = single, 2 = married'''
+    married = db.Column(db.String(10))
+    '''gender 1 = male , 2 = female'''
+    gender = db.Column(db.String(10))
+    '''eType 1 = hourly, 2 = daily, 3 = monthly'''
+    eType = db.Column(db.String(10))
+    eDate = db.Column(db.DateTime)
+    '''probation 1 = no, 2 =yes'''
+    probation = db.Column(db.String(10))
+    '''probation time unit in days'''
+    probationTime = db.Column(db.Integer)
+    remarks = db.Column(db.String(500))
+    def __init__(self, cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationTime, remarks):
+        self.cname = cname
+        self.ename = ename
+        self.hkid = hkid
+        self.address = address
+        self.phoneM = phoneM
+        self.phoneH = phoneH
+        self.salary = salary
+        self.title = title
+        self.married = married
+        self.gender = gender
+        self.eType = eType
+        self.eDate = eDate
+        self.probation = probation
+        self.probationTime = probationTime
+        self.remarks = remarks
+
 
 @app.route('/')
 def index():
@@ -55,26 +101,39 @@ def panelswells():
 def tables():
     return render_template("tables.html")
 
+@app.route('/employees')
+def employees():
+    return render_template("employees.html", workers=employee.query.all())
+
 @app.route('/typography')
 def typography():
     return render_template("typography.html")
 
-@app.route('/addEmployee')
+@app.route('/addEmployee', methods=['POST','GET'])
 def addEmployee():
-    gender = request.args.get('gender')
-    marriage = request.args.get('marriage')
-    type = request.args.get('type')
-    idnum = request.args.get('idnum')
-    chinese = request.args.get('chinese')
-    english = request.args.get('english')
-    address = request.args.get('address')
-    home = request.args.get('home')
-    mobile = request.args.get('mobile')
-    salary = request.args.get('salary')
-    title = request.args.get('title')
-    remarks = request.args.get('remarks')
-    print (gender,marriage,type,idnum,chinese,english,address,home,mobile,salary,title,remarks)
-    return jsonify(data="hello r")
+    gender = request.form['gender']
+    married = request.form['marriage']
+    eType = request.form['type']
+    eDate = request.form['eDate']
+    hkid = request.form['idnum']
+    cname = request.form['chinese']
+    ename = request.form['english']
+    address = request.form['address']
+    phoneH = request.form['home']
+    phoneM = request.form['mobile']
+    salary = request.form['salary']
+    title = request.form['title']
+    probation = request.form['probation']
+    pd= int(request.form['pd'])
+    pm=int(request.form['pm'])
+    remarks = request.form['remarks']
+    newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, pm+pd, remarks)
+    db.session.add(newEmployee)
+    db.session.commit()
+    print (cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, pm+pd, remarks)
+    return jsonify(bbb=eDate)
+
+
 
 
 if __name__ == '__main__':
