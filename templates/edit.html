@@ -1,0 +1,118 @@
+{% extends "index.html" %}
+{% block body %}
+<div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Edit employee</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Employee information
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label>Employee name</label>
+                                            <input class="form-control" id="chinese" placeholder="Chinese" value="{{worker.cname}}"><br>
+                                            <input class="form-control" id="english" placeholder="English" value="{{worker.ename}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>ID number</label>
+                                            <input class="form-control" id="idnum" placeholder="ID number" value="{{worker.ename}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Address</label>
+                                            <input class="form-control" id="address" placeholder="Address" value="{{worker.address}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Phone number</label>
+                                            <input class="form-control" id="home" placeholder="Home" value="{{worker.phoneH}}"><br>
+                                            <input class="form-control" id="mobile" placeholder="Mobile" value="{{worker.phoneM}}">
+                                        </div>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input type="text" class="form-control" id="salary" placeholder="Basic salary" value="{{worker.salary}}">
+                                            <span class="input-group-addon">.00</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input class="form-control" id="title" placeholder="Title" value="{{worker.title}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Marriage status</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios" id="single" value="Single">Single
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios" id="married" value="Married">Married
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gender</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios2" id="male" value="Male">Male
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios2" id="female" value="Female">Female
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Employment type</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="hourly" value="Hourly">Hourly
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="daily" value="Daily">Daily
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsRadios3" id="monthly" value="Monthly">Monthly
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Employment Date: </label><input type="text" id="datepicker" value="{{worker.eDate.strftime('%Y-%m-%d')}}">
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Probation</label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsPro" id="no" value="No">No
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="optionsPro" id="yes" value="Yes">Yes
+                                            </label>
+                                            <div id="pro">
+                                            <input type="text" size="2" id="pd"> days <input type="text" size="2" id="pm"> months
+                                        </div>
+                                            </div>
+                                        <div class="form-group">
+                                            <label>Remarks</label>
+                                            <textarea class="form-control" id="remarks" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Contract copy</label>
+                                            <input type="file">
+                                        </div>
+
+                                        <button type="button" class="btn btn-success" id="btn">Submit</button>
+                                        <button type="reset" class="btn btn-warning">Reset</button>
+                                    </form>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+<script src="../static/js/pr.js"></script>
+{% endblock %}

@@ -105,6 +105,12 @@ def tables():
 def employees():
     return render_template("employees.html", workers=employee.query.all())
 
+
+@app.route('/employees/<name>')
+def edit(name):
+    worker = employee.query.filter_by(ename=name).first()
+    return render_template("edit.html", name = name, worker=worker)
+
 @app.route('/typography')
 def typography():
     return render_template("typography.html")
