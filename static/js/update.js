@@ -1,8 +1,8 @@
-
+var workerid = {{worker.id}}
 $(function(){
       $("#btn").click(function(){
             $.ajax({
-            url: "/addEmployee",
+            url: "/updateEmployee",
             type: 'POST',
             data: {
             marriage: $("input[name=optionsRadios]:checked").val(),
@@ -21,42 +21,12 @@ $(function(){
             mobile: $("#mobile").val(),
             salary: $("#salary").val(),
             title: $("#title").val(),
-            remarks: $("#remarks").val()            
-          },
+            remarks: $("#remarks").val(),
+            workerid: var workerid
+            },
             success: function(){
-            alert("good");
+            alert("updated");
           },
+            });
         });
     });
-    });
-
-$( function() {
-    $( "#datepicker" ).datepicker({
-      dateFormat: "yy-mm-dd",
-	  changeMonth: true,
-      changeYear: true,
-      showOn: "button",
-      buttonImage: "../static/img/calendar.gif",
-      buttonImageOnly: true,
-      buttonText: "Select date"
-    });
-  } );
-
-$(function(){
-$("#pro").hide();
-		$('#Yes').click(function(){
-	 	$("#pro").show();
-	 	});
-	 	$('#No').click(function(){
-	 	$("#pro").hide();
-	 	});
-   });
-  $(function(){
-    if($("#Yes").prop("checked", true)){
-      $("#pro").show();
-    }
-    if($("#No").prop("checked", true)){
-      $("#pro").hide();
-    }
-});
-

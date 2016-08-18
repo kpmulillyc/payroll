@@ -47,31 +47,31 @@
                                         <div class="form-group">
                                             <label>Marriage status</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios" id="single" value="Single">Single
+                                                <input type="radio" name="optionsRadios" id="Single" value="Single" {% if worker.married == "Single" %}checked="checked"{% endif %}>Single
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios" id="married" value="Married">Married
+                                                <input type="radio" name="optionsRadios" id="Married" value="Married" {% if worker.married == "Married" %}checked="checked"{% endif %}>Married
                                             </label>
                                         </div>
                                         <div class="form-group">
                                             <label>Gender</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios2" id="male" value="Male">Male
+                                                <input type="radio" name="optionsRadios2" id="Male" value="Male" {% if worker.gender == "Male" %}checked="checked"{% endif %}>Male
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios2" id="female" value="Female">Female
+                                                <input type="radio" name="optionsRadios2" id="Female" value="Female" {% if worker.gender == "Female" %}checked="checked"{% endif %}>Female
                                             </label>
                                         </div>
                                         <div class="form-group">
                                             <label>Employment type</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios3" id="hourly" value="Hourly">Hourly
+                                                <input type="radio" name="optionsRadios3" id="Hourly" value="Hourly" {% if worker.eType == "Hourly" %}checked="checked"{% endif %}>Hourly
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios3" id="daily" value="Daily">Daily
+                                                <input type="radio" name="optionsRadios3" id="Daily" value="Daily" {% if worker.eType == "Daily" %}checked="checked"{% endif %}>Daily
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadios3" id="monthly" value="Monthly">Monthly
+                                                <input type="radio" name="optionsRadios3" id="Monthly" value="Monthly" {% if worker.eType == "Monthly" %}checked="checked"{% endif %}>Monthly
                                             </label>
                                         </div>
                                         <div class="form-group">
@@ -80,13 +80,18 @@
                                         <div class="form-group">
                                         <label>Probation</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsPro" id="no" value="No">No
+                                                <input type="radio" name="optionsPro" id="No" value="No" {% if worker.probation == "No" %}checked="checked"{% endif %}>No
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsPro" id="yes" value="Yes">Yes
+                                                <input type="radio" name="optionsPro" id="Yes" value="Yes" {% if worker.probation == "Yes" %}checked="checked"{% endif %}>Yes
                                             </label>
                                             <div id="pro">
-                                            <input type="text" size="2" id="pd"> days <input type="text" size="2" id="pm"> months
+                                            {% if worker.probation == "Yes" %}
+                                            <input type="text" size="2" id="pd" value="{{worker.pd}}"> days <input type="text" size="2" id="pw" value="{{worker.pw}}"> weeks <input type="text" size="2" id="pm" value="{{worker.pm}}"> months
+                                            {% else %}
+                                            <input type="text" size="2" id="pd"> days <input type="text" size="2" id="pw"> weeks <input type="text" size="2" id="pm"> months
+                                            {% endif %}
+
                                         </div>
                                             </div>
                                         <div class="form-group">
@@ -98,8 +103,8 @@
                                             <input type="file">
                                         </div>
 
-                                        <button type="button" class="btn btn-success" id="btn">Submit</button>
-                                        <button type="reset" class="btn btn-warning">Reset</button>
+                                        <button type="button" class="btn btn-success" id="btn">Update</button>
+                                        <button type="button" class="btn btn-warning">Cancel</button>
                                     </form>
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
@@ -115,4 +120,5 @@
                 <!-- /.col-lg-12 -->
             </div>
 <script src="../static/js/pr.js"></script>
+<script src="../static/js/update.js"></script>
 {% endblock %}
