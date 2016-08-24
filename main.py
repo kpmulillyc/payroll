@@ -130,14 +130,14 @@ def addEmployee():
     salary = request.form['salary']
     title = request.form['title']
     probation = request.form['probation']
-    pd= request.form['pd']
-    pw=request.form['pw']
-    pm= request.form['pm']
+    probationDays= request.form['pd']
+    probationWeeks=request.form['pw']
+    probationMonths= request.form['pm']
     remarks = request.form['remarks']
-    newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, pd, pw, pm, remarks)
+    newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks)
     db.session.add(newEmployee)
     db.session.commit()
-    print (cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, pm+pd, remarks)
+    print (cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, remarks)
     return jsonify(bbb=eDate)
 
 
@@ -158,9 +158,9 @@ def updateEmployee():
     upTarget.salary = request.form['salary']
     upTarget.title = request.form['title']
     upTarget.probation = request.form['probation']
-    upTarget.pd = request.form['pd']
-    upTarget.pw = request.form['pw']
-    upTarget.pm = request.form['pm']
+    upTarget.probationDays = request.form['pd']
+    upTarget.probationWeeks = request.form['pw']
+    upTarget.probationMonths = request.form['pm']
     upTarget.remarks = request.form['remarks']
     db.session.commit()
     return jsonify(bbb="gaodim")

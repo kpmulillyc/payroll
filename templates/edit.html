@@ -24,7 +24,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>ID number</label>
-                                            <input class="form-control" id="idnum" placeholder="ID number" value="{{worker.ename}}">
+                                            <input class="form-control" id="idnum" placeholder="ID number" value="{{worker.hkid}}">
                                         </div>
                                         <div class="form-group">
                                             <label>Address</label>
@@ -87,7 +87,7 @@
                                             </label>
                                             <div id="pro">
                                             {% if worker.probation == "Yes" %}
-                                            <input type="text" size="2" id="pd" value="{{worker.pd}}"> days <input type="text" size="2" id="pw" value="{{worker.pw}}"> weeks <input type="text" size="2" id="pm" value="{{worker.pm}}"> months
+                                            <input type="text" size="2" id="pd" value="{{worker.probationDays}}"> days <input type="text" size="2" id="pw" value="{{worker.probationWeeks}}"> weeks <input type="text" size="2" id="pm" value="{{worker.probationMonths}}"> months
                                             {% else %}
                                             <input type="text" size="2" id="pd"> days <input type="text" size="2" id="pw"> weeks <input type="text" size="2" id="pm"> months
                                             {% endif %}
@@ -103,7 +103,7 @@
                                             <input type="file">
                                         </div>
 
-                                        <button type="button" class="btn btn-success" id="btn">Update</button>
+                                        <button type="button" class="btn btn-success" id="update">Update</button>
                                         <button type="button" class="btn btn-warning">Cancel</button>
                                     </form>
                                 </div>

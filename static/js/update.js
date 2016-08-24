@@ -1,6 +1,7 @@
-var workerid = {{worker.id}}
+
 $(function(){
-      $("#btn").click(function(){
+      var workerid = "{{worker.id}}";
+      $("#update").click(function(){
             $.ajax({
             url: "/updateEmployee",
             type: 'POST',
@@ -22,7 +23,7 @@ $(function(){
             salary: $("#salary").val(),
             title: $("#title").val(),
             remarks: $("#remarks").val(),
-            workerid: var workerid
+            workerid:  workerid
             },
             success: function(){
             alert("updated");
