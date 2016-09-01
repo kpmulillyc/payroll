@@ -23,8 +23,8 @@ $(function(){
             title: $("#title").val(),
             remarks: $("#remarks").val()            
           },
-            success: function(){
-            alert("good");
+            success: function(data){
+            alert(data.bbb);
           },
         });
     });

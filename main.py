@@ -130,21 +130,32 @@ def addEmployee():
     salary = request.form['salary']
     title = request.form['title']
     probation = request.form['probation']
-    probationDays= request.form['pd']
-    probationWeeks=request.form['pw']
-    probationMonths= request.form['pm']
+    if probation is "No":
+        probationDays = 0
+        probationWeeks = 0
+        probationMonths = 0
+    else:
+        probationDays = request.form['pd']
+        probationWeeks = request.form['pw']
+        probationMonths = request.form['pm']
     remarks = request.form['remarks']
-    newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks)
-    db.session.add(newEmployee)
-    db.session.commit()
+    if employee.query.filter_by(hkid=hkid).first() is None:
+        newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks)
+        db.session.add(newEmployee)
+        db.session.commit()
+        bbb = "Successfully added!"
+    else:
+        bbb = "Employee already exists!"
     print (cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, remarks)
-    return jsonify(bbb=eDate)
+    return jsonify(bbb=bbb)
+
 
 
 @app.route('/updateEmployee', methods=['POST','GET'])
 def updateEmployee():
     workerid = request.form['workerid']
-    upTarget = employee.query.filter_by(id=workerid).first()
+    print (workerid)
+    upTarget = employee.query.filter_by(hkid=workerid).first()
     upTarget.gender = request.form['gender']
     upTarget.married = request.form['marriage']
     upTarget.eType = request.form['type']
@@ -158,12 +169,17 @@ def updateEmployee():
     upTarget.salary = request.form['salary']
     upTarget.title = request.form['title']
     upTarget.probation = request.form['probation']
-    upTarget.probationDays = request.form['pd']
-    upTarget.probationWeeks = request.form['pw']
-    upTarget.probationMonths = request.form['pm']
+    if upTarget.probation is "No":
+        upTarget.probationDays = 0
+        upTarget.probationWeeks = 0
+        upTarget.probationMonths = 0
+    else:
+        upTarget.probationDays = request.form['pd']
+        upTarget.probationWeeks = request.form['pw']
+        upTarget.probationMonths = request.form['pm']
     upTarget.remarks = request.form['remarks']
     db.session.commit()
-    return jsonify(bbb="gaodim")
+    return jsonify(bbb="Updated!")
 
 if __name__ == '__main__':
     app.run(debug=True)

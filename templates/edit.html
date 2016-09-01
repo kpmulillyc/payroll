@@ -120,5 +120,38 @@
                 <!-- /.col-lg-12 -->
             </div>
 <script src="../static/js/pr.js"></script>
-<script src="../static/js/update.js"></script>
+<script type="text/javascript">
+$(function(){
+      var workerid = "{{worker.hkid}}";
+      $("#update").click(function(){
+            $.ajax({
+            url: "/updateEmployee",
+            type: 'POST',
+            data: {
+            marriage: $("input[name=optionsRadios]:checked").val(),
+            gender: $("input[name=optionsRadios2]:checked").val(),
+            type: $("input[name=optionsRadios3]:checked").val(),
+            eDate: $("#datepicker").val(),
+            probation: $("input[name=optionsPro]:checked").val(),
+            pd: $("#pd").val(),
+            pw: $("#pw").val(),
+            pm: $("#pm").val(),
+            idnum: $("#idnum").val(),
+            chinese: $("#chinese").val(),
+            english: $("#english").val(),
+            address: $("#address").val(),
+            home: $("#home").val(),
+            mobile: $("#mobile").val(),
+            salary: $("#salary").val(),
+            title: $("#title").val(),
+            remarks: $("#remarks").val(),
+            workerid: workerid
+            },
+            success: function(data){
+            alert(data.bbb);
+          },
+            });
+        });
+    });
+</script>
 {% endblock %}
