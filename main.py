@@ -62,8 +62,6 @@ class Salary(db.Model):
 
 worker = Employee.query.filter_by(id=1).first()
 u = worker.salaries.all()
-for i in u:
-    print (i)
 
 @app.route('/')
 def index():
@@ -123,7 +121,7 @@ def employees():
 
 @app.route('/wages')
 def wages():
-    return render_template("wages.html")
+    return render_template("wages.html",wages = u)
 
 @app.route('/employees/<name>')
 def edit(name):
