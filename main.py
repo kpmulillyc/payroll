@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:kingsford@localhost/payrol
 db=SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-class employee(db.Model):
+class Employee(db.Model):
     __tablename__ = 'employee'
     id = db.Column(db.Integer, primary_key=True)
     cname = db.Column(db.String(50,collation = 'utf8_bin'))
@@ -28,6 +28,8 @@ class employee(db.Model):
     probationWeeks = db.Column(db.Integer)
     probationMonths = db.Column(db.Integer)
     remarks = db.Column(db.String(500))
+    salaries = db.relationship('Salary', backref='employee',
+                                lazy='dynamic')
     def __init__(self, cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks):
         self.cname = cname
         self.ename = ename
@@ -47,7 +49,21 @@ class employee(db.Model):
         self.probationMonths = probationMonths
         self.remarks = remarks
 
+class Salary(db.Model):
+    __tablename__='salary'
+    sid = db.Column(db.Integer, primary_key =True)
+    date = db.Column(db.DateTime)
+    employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    amount = db.Column(db.Float(15))
 
+    """def __init__(self,date, amount):
+        self.date = date
+        self.amount = amount"""
+
+worker = Employee.query.filter_by(id=1).first()
+u = worker.salaries.all()
+for i in u:
+    print (i)
 
 @app.route('/')
 def index():
@@ -103,12 +119,15 @@ def tables():
 
 @app.route('/employees')
 def employees():
-    return render_template("employees.html", workers=employee.query.all())
+    return render_template("employees.html", workers=Employee.query.all())
 
+@app.route('/wages')
+def wages():
+    return render_template("wages.html")
 
 @app.route('/employees/<name>')
 def edit(name):
-    worker = employee.query.filter_by(ename=name).first()
+    worker = Employee.query.filter_by(ename=name).first()
     return render_template("edit.html", name = name, worker=worker)
 
 @app.route('/typography')
@@ -139,8 +158,8 @@ def addEmployee():
         probationWeeks = request.form['pw']
         probationMonths = request.form['pm']
     remarks = request.form['remarks']
-    if employee.query.filter_by(hkid=hkid).first() is None:
-        newEmployee = employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks)
+    if Employee.query.filter_by(hkid=hkid).first() is None:
+        newEmployee = Employee(cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks)
         db.session.add(newEmployee)
         db.session.commit()
         bbb = "Successfully added!"
@@ -155,7 +174,7 @@ def addEmployee():
 def updateEmployee():
     workerid = request.form['workerid']
     print (workerid)
-    upTarget = employee.query.filter_by(hkid=workerid).first()
+    upTarget = Employee.query.filter_by(hkid=workerid).first()
     upTarget.gender = request.form['gender']
     upTarget.married = request.form['marriage']
     upTarget.eType = request.form['type']
@@ -180,6 +199,8 @@ def updateEmployee():
     upTarget.remarks = request.form['remarks']
     db.session.commit()
     return jsonify(bbb="Updated!")
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
