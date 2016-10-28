@@ -1,0 +1,13 @@
+{% extends "index.html"%}
+{% block body %}
+{% for i in wages %}
+{{ i.amount }}
+{{ i.employee.ename }}
+{{ i.date.strftime('%m') }}
+{% if i.date.strftime('%m') == '13' %}
+Paid
+{% else %}
+Unpaid
+{% endif %}
+{% endfor %}
+{% endblock %}
