@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block body %}
+Calculation for this month<br>
+{{ worker.ename}}<br>
+<input type="text" class="form-control" id="salary" placeholder="Basic salary"><br>
+<button type="button" class="btn btn-success" id="btn">Submit</button>
+<script type="text/javascript">
+$(function(){
+	var employeeid = "{{worker.id}}";
+	$("#btn").click(function(){
+		$.ajax({
+			url: "/pay",
+			type: 'POST',
+			data: {
+				salary: $("#salary").val(),
+				employeeid: employeeid
+			},
+			success: function(data){
+			alert(data.bbb);
+			},
+		});
+	});
+});
+</script>
+{% endblock %}

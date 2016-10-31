@@ -56,12 +56,10 @@ class Salary(db.Model):
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
     amount = db.Column(db.Float(15))
 
-    """def __init__(self,date, amount):
+    def __init__(self, date,amount, employeeid):
         self.date = date
-        self.amount = amount"""
-
-worker = Employee.query.filter_by(id=1).first()
-u = worker.salaries.all()
+        self.amount = amount
+        self.employeeid = employeeid
 
 @app.route('/')
 def index():
@@ -121,16 +119,39 @@ def employees():
 
 @app.route('/wages')
 def wages():
-    return render_template("wages.html",wages = u)
+    return render_template("wages.html", workers=Employee.query.all())
 
-@app.route('/employees/<name>')
-def edit(name):
-    worker = Employee.query.filter_by(ename=name).first()
-    return render_template("edit.html", name = name, worker=worker)
+@app.route('/employees/<id>')
+def edit(id):
+    worker = Employee.query.filter_by(hkid=id).first()
+    return render_template("edit.html", worker=worker)
 
 @app.route('/typography')
 def typography():
     return render_template("typography.html")
+
+@app.route('/report/<id>')
+def report(id):
+    worker = Employee.query.filter_by(hkid=id).first()
+    a = worker.salaries.all()
+    return render_template("report.html", id = id, wages = a, worker= worker)
+
+@app.route('/calculate/<id>')
+def calculate(id):
+    worker = Employee.query.filter_by(hkid=id).first()
+    a = worker.salaries.all()
+    return render_template("calculate.html", id = id, wages = a, worker= worker)
+
+@app.route('/pay', methods=['POST','GET'])
+def pay():
+    salary = request.form['salary']
+    employeeid = request.form['employeeid']
+    b = Salary(datetime.now(), salary, employeeid)
+    db.session.add(b)
+    db.session.commit()
+    bbb='done'
+    return jsonify(bbb=bbb)
+
 
 @app.route('/addEmployee', methods=['POST','GET'])
 def addEmployee():
