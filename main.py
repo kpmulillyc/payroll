@@ -51,15 +51,16 @@ class Employee(db.Model):
 
 class Salary(db.Model):
     __tablename__='salary'
-    sid = db.Column(db.Integer, primary_key =True)
-    date = db.Column(db.DateTime)
+    id = db.Column(db.Integer, primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    date = db.Column(db.DateTime)
     amount = db.Column(db.Float(15))
 
-    def __init__(self, date,amount, employeeid):
+    def __init__(self, employeeid,date,amount):
+        self.employeeid = employeeid
         self.date = date
         self.amount = amount
-        self.employeeid = employeeid
+
 
 @app.route('/')
 def index():
@@ -144,11 +145,13 @@ def calculate(id):
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
-    salary = request.form['salary']
+    day=[]
     employeeid = request.form['employeeid']
-    b = Salary(datetime.now(), salary, employeeid)
-    db.session.add(b)
-    db.session.commit()
+    for i in range(31):
+        day.append(request.form['day'+str(i+1)])
+        b = Salary(employeeid,datetime.now(), day[i] )
+        db.session.add(b)
+        db.session.commit()
     bbb='done'
     return jsonify(bbb=bbb)
 

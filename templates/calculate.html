@@ -1,9 +1,62 @@
 {% extends "index.html" %}
 {% block body %}
-Calculation for this month<br>
-{{ worker.ename}}<br>
-<input type="text" class="form-control" id="salary" placeholder="Basic salary"><br>
+                        <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Hover Rows
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        	<th>Day of month</th>
+                                            <th>Basic Salary</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in range(31) %}
+                                        <tr>
+                                        <td>{{i+1}}</td>
+                                        <td>1000</td>
+                                        <td><input class="form-control" id="day{{i+1}}" value="1000"></td>
+                                        </tr>
+                                     {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+    <!-- jQuery -->
+    <script src="../static/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../static/metisMenu/dist/metisMenu.min.js"></script>
+
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/js/sb-admin-2.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                   <input class="form-control" id="total" value="1000">
 <button type="button" class="btn btn-success" id="btn">Submit</button>
+
+</div>
+</div>
+</div>
 <script type="text/javascript">
 $(function(){
 	var employeeid = "{{worker.id}}";
@@ -12,7 +65,9 @@ $(function(){
 			url: "/pay",
 			type: 'POST',
 			data: {
-				salary: $("#salary").val(),
+				{% for i in range(30) %}
+				day{{i+1}}: $("#day{{i+1}}").val(),
+				{% endfor %}
 				employeeid: employeeid
 			},
 			success: function(data){
