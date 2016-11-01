@@ -61,6 +61,10 @@ class Salary(db.Model):
         self.date = date
         self.amount = amount
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0bd3ba8db22e24f40bf777d8b6e956474f59b241
 
 @app.route('/')
 def index():
@@ -145,6 +149,36 @@ def calculate(id):
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
+<<<<<<< HEAD
+    def checkMonth(x):
+        if x in ("1","3","5","7","8","10","12"):
+            return True
+        else:
+            return False
+    day=[]
+    employeeid = request.form['employeeid']
+    month = str(11)
+    year = str(2016)
+    col = "-"
+    if checkMonth(month):
+        for i in range(31):
+            day.append(request.form['day'+str(i+1)])
+            date = str(i+1)
+            date_string = year+col+month+col+date
+            datetime.strptime(date_string, "%Y-%m-%d")
+            b = Salary(employeeid, date_string, day[i] )
+            db.session.add(b)
+            db.session.commit()
+    else:
+        for i in range(30):
+            day.append(request.form['day'+str(i+1)])
+            date = str(i+1)
+            date_string = year+col+month+col+date
+            datetime.strptime(date_string, "%Y-%m-%d")
+            b = Salary(employeeid, date_string, day[i] )
+            db.session.add(b)
+            db.session.commit()
+=======
     day=[]
     employeeid = request.form['employeeid']
     for i in range(31):
@@ -152,6 +186,7 @@ def pay():
         b = Salary(employeeid,datetime.now(), day[i] )
         db.session.add(b)
         db.session.commit()
+>>>>>>> 0bd3ba8db22e24f40bf777d8b6e956474f59b241
     bbb='done'
     return jsonify(bbb=bbb)
 
