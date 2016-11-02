@@ -17,12 +17,12 @@ class Employee(db.Model):
     address = db.Column(db.String(100))
     phoneM = db.Column(db.Integer)
     phoneH = db.Column(db.Integer)
-    salary = db.Column(db.Float)
+    salary = db.Column(db.Numeric)
     title = db.Column(db.String(20))
     married = db.Column(db.String(10))
     gender = db.Column(db.String(10))
     eType = db.Column(db.String(10))
-    eDate = db.Column(db.DateTime)
+    eDate = db.Column(db.Date)
     probation = db.Column(db.String(10))
     probationDays = db.Column(db.Integer)
     probationWeeks = db.Column(db.Integer)
@@ -30,6 +30,8 @@ class Employee(db.Model):
     remarks = db.Column(db.String(500))
     salaries = db.relationship('Salary', backref='employee',
                                 lazy='dynamic')
+    dailySalaries = db.relationship('DailySalary', backref='employee',
+                               lazy='dynamic')
     def __init__(self, cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks):
         self.cname = cname
         self.ename = ename
@@ -53,18 +55,28 @@ class Salary(db.Model):
     __tablename__='salary'
     id = db.Column(db.Integer, primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
-    date = db.Column(db.DateTime)
-    amount = db.Column(db.Float(15))
+    date = db.Column(db.Date)
+    amount = db.Column(db.Numeric)
 
     def __init__(self, employeeid,date,amount):
         self.employeeid = employeeid
         self.date = date
         self.amount = amount
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 0bd3ba8db22e24f40bf777d8b6e956474f59b241
+class DailySalary(db.Model):
+    __tablename__='dailySalary'
+    id = db.Column(db.Integer, primary_key=True)
+    employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    date = db.Column(db.Date)
+    amount = db.Column(db.Numeric)
+
+    def __init__(self, employeeid,date,amount):
+        self.employeeid = employeeid
+        self.date = date
+        self.amount = amount
+
+
 
 @app.route('/')
 def index():
@@ -149,7 +161,6 @@ def calculate(id):
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
-<<<<<<< HEAD
     def checkMonth(x):
         if x in ("1","3","5","7","8","10","12"):
             return True
@@ -160,33 +171,29 @@ def pay():
     month = str(11)
     year = str(2016)
     col = "-"
+    sum = request.form['sum']
     if checkMonth(month):
         for i in range(31):
             day.append(request.form['day'+str(i+1)])
             date = str(i+1)
             date_string = year+col+month+col+date
             datetime.strptime(date_string, "%Y-%m-%d")
-            b = Salary(employeeid, date_string, day[i] )
+            a = Salary(employeeid,datetime.now(),sum)
+            b = DailySalary(employeeid, date_string, day[i] )
             db.session.add(b)
-            db.session.commit()
+        db.session.add(a)
+        db.session.commit()
     else:
         for i in range(30):
             day.append(request.form['day'+str(i+1)])
             date = str(i+1)
             date_string = year+col+month+col+date
             datetime.strptime(date_string, "%Y-%m-%d")
-            b = Salary(employeeid, date_string, day[i] )
+            a = Salary(employeeid, datetime.now(),sum)
+            b = DailySalary(employeeid, date_string, day[i] )
             db.session.add(b)
-            db.session.commit()
-=======
-    day=[]
-    employeeid = request.form['employeeid']
-    for i in range(31):
-        day.append(request.form['day'+str(i+1)])
-        b = Salary(employeeid,datetime.now(), day[i] )
-        db.session.add(b)
+        db.session.add(a)
         db.session.commit()
->>>>>>> 0bd3ba8db22e24f40bf777d8b6e956474f59b241
     bbb='done'
     return jsonify(bbb=bbb)
 
@@ -260,4 +267,4 @@ def updateEmployee():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,threaded=True)
