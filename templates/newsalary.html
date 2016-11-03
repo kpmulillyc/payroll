@@ -5,7 +5,11 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Hover Rows
+                            <select name='month' id="month">
+                            {% for i in range(12) %}
+        <option value='{{i+1}}'>{{i+1}}</option>
+        {% endfor %}
+          </select>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -19,11 +23,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in wages %}
-                                        <tr>
-                                        <td>{{i.DailySalary.date.strftime("%-d")}}</td>
+                                        {% for i in range(31) %}
+                                        <tr id="row{{i+1}}">
+                                        <td>{{i+1}}</td>
                                         <td>1000</td>
-                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.amount}}"></td>
+                                        <td><input class="form-control" id="day{{i+1}}" name="txt" value="1000"></td>
                                         </tr>
                                      {% endfor %}
                                     </tbody>
@@ -35,6 +39,7 @@
                     </div>
                     <!-- /.panel -->
                 </div>
+       
     <!-- jQuery -->
     <script src="../static/jquery/dist/jquery.min.js"></script>
 
@@ -59,6 +64,13 @@
 </div>
 </div>
 <script type="text/javascript">
+$("#month").change(function () {
+    if(this.value !== 1 || this.value !== 3 || this.value !== 5 || this.value !== 7 || this.value !== 8 || this.value !== 10 || this.value !== 12) {
+        $("#row31").detach();
+    }
+    else if (this.value == 1 || this.value == 3 || this.value == 5 || this.value == 7 || this.value == 8 || this.value == 10 || this.value == 12) && $("#day31").length == 0
+        $("#row31").detach();
+});
 $(function(){
 	var employeeid = "{{worker.id}}";
 	$("#btn").click(function(){
@@ -86,6 +98,7 @@ $(function() {
         calculateSum();
     });
 });
+
 
 function calculateSum() {
     var sum = 0;

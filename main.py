@@ -1,5 +1,7 @@
 from flask import Flask, render_template,request,jsonify,url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import  and_
+from sqlalchemy.sql import func
 import uniout
 from datetime import datetime
 
@@ -7,6 +9,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:kingsford@localhost/payroll?charset=utf8'
 db=SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+
+def checkMonth(x):
+    if x in ("1", "3", "5", "7", "8", "10", "12"):
+        return True
+    else:
+        return False
 
 class Employee(db.Model):
     __tablename__ = 'employee'
@@ -17,7 +26,7 @@ class Employee(db.Model):
     address = db.Column(db.String(100))
     phoneM = db.Column(db.Integer)
     phoneH = db.Column(db.Integer)
-    salary = db.Column(db.Numeric)
+    salary = db.Column(db.DECIMAL(10,2))
     title = db.Column(db.String(20))
     married = db.Column(db.String(10))
     gender = db.Column(db.String(10))
@@ -56,7 +65,7 @@ class Salary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
     date = db.Column(db.Date)
-    amount = db.Column(db.Numeric)
+    amount = db.Column(db.DECIMAL(10,2))
 
     def __init__(self, employeeid,date,amount):
         self.employeeid = employeeid
@@ -69,7 +78,7 @@ class DailySalary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
     date = db.Column(db.Date)
-    amount = db.Column(db.Numeric)
+    amount = db.Column(db.DECIMAL(10,2))
 
     def __init__(self, employeeid,date,amount):
         self.employeeid = employeeid
@@ -155,17 +164,19 @@ def report(id):
 
 @app.route('/calculate/<id>')
 def calculate(id):
-    worker = Employee.query.filter_by(hkid=id).first()
-    a = worker.salaries.all()
+    worker = db.session.query(Employee).filter(Employee.hkid==id).first()
+    a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==11),Employee.id==DailySalary.employeeid).all()
     return render_template("calculate.html", id = id, wages = a, worker= worker)
+
+@app.route('/newsalary/<id>')
+def newsalary(id):
+    worker = db.session.query(Employee).filter(Employee.hkid==id).first()
+    return render_template("newsalary.html",id=id, worker=worker)
+
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
-    def checkMonth(x):
-        if x in ("1","3","5","7","8","10","12"):
-            return True
-        else:
-            return False
+
     day=[]
     employeeid = request.form['employeeid']
     month = str(11)
