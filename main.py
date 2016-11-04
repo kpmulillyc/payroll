@@ -171,7 +171,8 @@ def calculate(id):
 @app.route('/newsalary/<id>')
 def newsalary(id):
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
-    return render_template("newsalary.html",id=id, worker=worker)
+    html = "{% for i in range(0) %}"
+    return render_template("newsalary.html",id=id, worker=worker, days=0,html=html)
 
 
 @app.route('/pay', methods=['POST','GET'])
@@ -275,7 +276,12 @@ def updateEmployee():
     db.session.commit()
     return jsonify(bbb="Updated!")
 
-
+@app.route('/daysInMonth', methods=['GET','POST'])
+def daysInMonth():
+    days = int(request.form['days'])
+    worker = request.form['worker']
+    print(days)
+    return render_template("calculate.html", days= days, worker= worker)
 
 if __name__ == '__main__':
     app.run(debug=True,threaded=True)
