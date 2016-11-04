@@ -10,23 +10,20 @@
         <option value='{{i+1}}'>{{i+1}}</option>
         {% endfor %}
           </select>
-          {% if days == 0 %}
-          {% else %}
-                        </div>
+          </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <table class="table table-hover" id="dayTable">
                                     <thead>
                                         <tr>
-                                        	<th>Day of month</th>
+                                            <th>Day of month</th>
                                             <th>Basic Salary</th>
-                                            <th>Amount</th>
+                                            <th>Amount {{days}}  {{msg}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in range(0) %}
-                                        {{html}}
+                                        {% for i in range(days) %}
                                         <tr id="row{{i+1}}">
                                         <td>{{i+1}}</td>
                                         <td>1000</td>
@@ -42,7 +39,6 @@
                     </div>
                     <!-- /.panel -->
                 </div>
-                {% endif %}
        
     <!-- jQuery -->
     <script src="../static/jquery/dist/jquery.min.js"></script>
@@ -70,21 +66,21 @@
 <script type="text/javascript">
 
 $(function(){
+    var table = $('#dayTable').DataTable;
     var employeeid = "{{worker.id}}";
     function daysInMonth(month, year) {
   return new Date(year, month, 0).getDate();
 }
     $("#month").change(function(){
         $.ajax({
-            url: '/daysInMonth',
+            url: '{{url_for('newsalary',id=worker.hkid)}}',
             type: 'POST',
             data: {
                 days: daysInMonth($("#month").val(), 2016),
-                worker: employeeid
             },
-            success: location.reload(true),
-
+            success: $('#dayTable').reload(),
         });
+
     });
 
 	

@@ -168,11 +168,16 @@ def calculate(id):
     a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==11),Employee.id==DailySalary.employeeid).all()
     return render_template("calculate.html", id = id, wages = a, worker= worker)
 
-@app.route('/newsalary/<id>')
+@app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
-    html = "{% for i in range(0) %}"
-    return render_template("newsalary.html",id=id, worker=worker, days=0,html=html)
+    if request.is_xhr:
+        days = request.form['days']
+        days = int(days)
+        print days
+        return render_template("newsalary.html", worker=worker,days = days, msg = "success")
+    else:
+        return render_template("newsalary.html", worker=worker, days=0, msg = "fail")
 
 
 @app.route('/pay', methods=['POST','GET'])
