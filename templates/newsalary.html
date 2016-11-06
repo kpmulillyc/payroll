@@ -10,20 +10,26 @@
         <option value='{{i+1}}'>{{i+1}}</option>
         {% endfor %}
           </select>
+          <select name='year' id="year">
+                            {% for i in range(2015,2026) %}
+        <option value='{{i}}'>{{i}}</option>
+        {% endfor %}
+          </select>
+          <button type="button" class="btn btn-success" id="confirm">Confirm</button>
           </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table class="table table-hover" id="dayTable">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Day of month</th>
                                             <th>Basic Salary</th>
-                                            <th>Amount {{days}}  {{msg}}</th>
+                                            <th>Amount</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        {% for i in range(days) %}
+                                    <tbody id="body">
+                                        {% for i in range(31) %}
                                         <tr id="row{{i+1}}">
                                         <td>{{i+1}}</td>
                                         <td>1000</td>
@@ -66,19 +72,21 @@
 <script type="text/javascript">
 
 $(function(){
-    var table = $('#dayTable').DataTable;
     var employeeid = "{{worker.id}}";
     function daysInMonth(month, year) {
   return new Date(year, month, 0).getDate();
 }
-    $("#month").change(function(){
+    $("#confirm").click(function(){
         $.ajax({
             url: '{{url_for('newsalary',id=worker.hkid)}}',
             type: 'POST',
             data: {
-                days: daysInMonth($("#month").val(), 2016),
+                days: daysInMonth($("#month").val(), $("#year").val()),
             },
-            success: $('#dayTable').reload(),
+            success: function(data){
+            	$("#body").html(data.new);
+            	calculateSum();
+            },
         });
 
     });
