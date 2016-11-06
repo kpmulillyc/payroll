@@ -172,12 +172,14 @@ def calculate(id):
 def newsalary(id):
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
     if request.is_xhr:
-        days = request.form['days']
-        days = int(days)
-        print days
-        return render_template("newsalary.html", worker=worker,days = days, msg = "success")
+        days = int(request.form['days'])
+        new = ""
+        for x in range(days):
+            html = '<tr><td>'+str(x+1)+'</td><td>1000</td><td><input class="form-control" id="day'+str(x+1)+'" name="txt" value="1000"></td></tr>'
+            new = new+html
+        return jsonify(new=new)
     else:
-        return render_template("newsalary.html", worker=worker, days=0, msg = "fail")
+        return render_template("newsalary.html", worker=worker)
 
 
 @app.route('/pay', methods=['POST','GET'])
