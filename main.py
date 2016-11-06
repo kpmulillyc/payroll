@@ -11,11 +11,6 @@ db=SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
-def checkMonth(x):
-    if x in ("1", "3", "5", "7", "8", "10", "12"):
-        return True
-    else:
-        return False
 
 class Employee(db.Model):
     __tablename__ = 'employee'
@@ -84,6 +79,7 @@ class DailySalary(db.Model):
         self.employeeid = employeeid
         self.date = date
         self.amount = amount
+
 
 
 
@@ -162,10 +158,12 @@ def report(id):
     a = worker.salaries.all()
     return render_template("report.html", id = id, wages = a, worker= worker)
 
-@app.route('/calculate/<id>')
-def calculate(id):
+@app.route('/calculate/<id>?<date>')
+def calculate(id,date):
+    datetime.strptime(date,"%Y-%m-%d")
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
-    a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==11),Employee.id==DailySalary.employeeid).all()
+    a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),Employee.id==DailySalary.employeeid)).all()
+    print date
     return render_template("calculate.html", id = id, wages = a, worker= worker)
 
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
@@ -187,32 +185,23 @@ def pay():
 
     day=[]
     employeeid = request.form['employeeid']
-    month = str(11)
-    year = str(2016)
+    month = request.form['month']
+    year = request.form['year']
     col = "-"
     sum = request.form['sum']
-    if checkMonth(month):
-        for i in range(31):
-            day.append(request.form['day'+str(i+1)])
-            date = str(i+1)
-            date_string = year+col+month+col+date
-            datetime.strptime(date_string, "%Y-%m-%d")
-            a = Salary(employeeid,datetime.now(),sum)
-            b = DailySalary(employeeid, date_string, day[i] )
-            db.session.add(b)
-        db.session.add(a)
-        db.session.commit()
-    else:
-        for i in range(30):
-            day.append(request.form['day'+str(i+1)])
-            date = str(i+1)
-            date_string = year+col+month+col+date
-            datetime.strptime(date_string, "%Y-%m-%d")
-            a = Salary(employeeid, datetime.now(),sum)
-            b = DailySalary(employeeid, date_string, day[i] )
-            db.session.add(b)
-        db.session.add(a)
-        db.session.commit()
+    days=int(request.form['days'])
+    sumdatestr = year+col+month+col+"1"
+    datetime.strptime(sumdatestr, "%Y-%m-%d")
+    for i in range(days):
+        day.append(request.form['day'+str(i+1)])
+        date = str(i+1)
+        date_string = year+col+month+col+date
+        datetime.strptime(date_string, "%Y-%m-%d")
+        b = DailySalary(employeeid, date_string, day[i] )
+        db.session.add(b)
+    a = Salary(employeeid, sumdatestr, sum)
+    db.session.add(a)
+    db.session.commit()
     bbb='done'
     return jsonify(bbb=bbb)
 
@@ -283,12 +272,7 @@ def updateEmployee():
     db.session.commit()
     return jsonify(bbb="Updated!")
 
-@app.route('/daysInMonth', methods=['GET','POST'])
-def daysInMonth():
-    days = int(request.form['days'])
-    worker = request.form['worker']
-    print(days)
-    return render_template("calculate.html", days= days, worker= worker)
+
 
 if __name__ == '__main__':
     app.run(debug=True,threaded=True)
