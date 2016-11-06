@@ -5,17 +5,18 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <select name='month' id="month">
+                           Month: <select name='month' id="month">
                             {% for i in range(12) %}
         <option value='{{i+1}}'>{{i+1}}</option>
         {% endfor %}
           </select>
-          <select name='year' id="year">
-                            {% for i in range(2015,2026) %}
+          Year: <select name='year' id="year">
+                            {% for i in range(2016,2026) %}
         <option value='{{i}}'>{{i}}</option>
         {% endfor %}
           </select>
-          <button type="button" class="btn btn-success" id="confirm">Confirm</button>
+          <button type="button" class="btn btn-success" id="confirm">Select</button>
+          <h1 id="date">Salary for 1/2016</h1>
           </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -84,7 +85,10 @@ $(function(){
                 days: daysInMonth($("#month").val(), $("#year").val()),
             },
             success: function(data){
+    			var month = $("#month").val();
+    			var year = $("#year").val();
             	$("#body").html(data.new);
+            	$("#date").html("Salary for "+month+"/"+year);
             	calculateSum();
             },
         });
@@ -97,9 +101,12 @@ $(function(){
 			url: "/pay",
 			type: 'POST',
 			data: {
+				month: $("#month").val(),
+				year: $("#year").val(),
 				{% for i in range(31) %}
 				day{{i+1}}: $("#day{{i+1}}").val(),
 				{% endfor %}
+				days: daysInMonth($("#month").val(), $("#year").val()),
 				employeeid: employeeid,
 				sum: $("#sum1").val()
 			},
