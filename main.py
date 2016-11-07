@@ -80,6 +80,21 @@ class DailySalary(db.Model):
         self.date = date
         self.amount = amount
 
+def weekDay(x):
+    if x == 0:
+        return "Monday"
+    elif x == 1:
+        return "Tuesday"
+    elif x == 2:
+        return "Wednesday"
+    elif x == 3:
+        return "Thursday"
+    elif x == 4:
+        return "Friday"
+    elif x == 5:
+        return "Saturday"
+    elif x == 6:
+        return "<font color='red'>Sunday</font>"
 
 
 
@@ -163,18 +178,23 @@ def calculate(id,date):
     datetime.strptime(date,"%Y-%m-%d")
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
     a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),Employee.id==DailySalary.employeeid)).all()
-    print date
-    return render_template("calculate.html", id = id, wages = a, worker= worker)
+    strdate = datetime.strftime(datetime.strptime(date,"%Y-%m-%d"),"%m-%Y")
+    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate)
 
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
     if request.is_xhr:
         days = int(request.form['days'])
-        new = ""
+        month = str(request.form['month'])
+        year = str(request.form['year'])
+        new = ''
         for x in range(days):
-            html = '<tr><td>'+str(x+1)+'</td><td>1000</td><td><input class="form-control" id="day'+str(x+1)+'" name="txt" value="1000"></td></tr>'
-            new = new+html
+            ddd = datetime.strptime((year+month+str(x+1)),"%Y%m%d")
+            wd = ddd.weekday()
+            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'</td><td>1000</td><td><input name="txt" class="form-control"' \
+                                       ' id="row'+str(x+1)+'" value="1000"></td></tr>'
+            new += html
         return jsonify(new=new)
     else:
         return render_template("newsalary.html", worker=worker)

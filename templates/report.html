@@ -20,7 +20,7 @@
                                     <tbody>
                                     {% for i in wages %}
                                     <tr>
-                                        <td><a href="{{url_for('calculate',id =id,date=i.date)}}">{{ i.date.strftime("%Y-%m-%d") }}</a></td>
+                                        <td><a href="{{url_for('calculate',id =id,date=i.date)}}">{{ i.date.strftime("%m-%Y") }}</a></td>
                                     	<td><a href="{{url_for('calculate',id =id,date=i.date)}}">{{ i.amount}} </a></td>
                                     </tr>
                                     {% endfor %}
