@@ -82,19 +82,19 @@ class DailySalary(db.Model):
 
 def weekDay(x):
     if x == 0:
-        return "Monday"
+        return "Mon"
     elif x == 1:
-        return "Tuesday"
+        return "Tue"
     elif x == 2:
-        return "Wednesday"
+        return "Wed"
     elif x == 3:
-        return "Thursday"
+        return "Thur"
     elif x == 4:
-        return "Friday"
+        return "Fri"
     elif x == 5:
-        return "Saturday"
+        return "Sat"
     elif x == 6:
-        return "<font color='red'>Sunday</font>"
+        return "<font color='red'>Sun</font>"
 
 
 
@@ -175,11 +175,14 @@ def report(id):
 
 @app.route('/calculate/<id>?<date>')
 def calculate(id,date):
-    datetime.strptime(date,"%Y-%m-%d")
+    date = datetime.strptime(date,"%Y-%m-%d")
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
     a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),Employee.id==DailySalary.employeeid)).all()
-    strdate = datetime.strftime(datetime.strptime(date,"%Y-%m-%d"),"%m-%Y")
-    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate)
+    strdate = datetime.strftime(date,"%m-%Y")
+    wd = []
+    for i in a:
+        wd.append(weekDay(i.DailySalary.date.weekday()))
+    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate,wd=wd)
 
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
@@ -190,7 +193,7 @@ def newsalary(id):
         year = str(request.form['year'])
         new = ''
         for x in range(days):
-            ddd = datetime.strptime((year+month+str(x+1)),"%Y%m%d")
+            ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
             wd = ddd.weekday()
             html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'</td><td>1000</td><td><input name="txt" class="form-control"' \
                                        ' id="row'+str(x+1)+'" value="1000"></td></tr>'
@@ -207,19 +210,18 @@ def pay():
     employeeid = request.form['employeeid']
     month = request.form['month']
     year = request.form['year']
-    col = "-"
     sum = request.form['sum']
+    col = ":"
     days=int(request.form['days'])
     sumdatestr = year+col+month+col+"1"
-    datetime.strptime(sumdatestr, "%Y-%m-%d")
+    sumdate = datetime.strptime(sumdatestr, "%Y:%m:%d")
     for i in range(days):
         day.append(request.form['day'+str(i+1)])
-        date = str(i+1)
-        date_string = year+col+month+col+date
-        datetime.strptime(date_string, "%Y-%m-%d")
-        b = DailySalary(employeeid, date_string, day[i] )
+        date_string = year+col+month+col+str(i+1)
+        ds = datetime.strptime(date_string, "%Y:%m:%d")
+        b = DailySalary(employeeid, ds, day[i] )
         db.session.add(b)
-    a = Salary(employeeid, sumdatestr, sum)
+    a = Salary(employeeid, sumdate, sum)
     db.session.add(a)
     db.session.commit()
     bbb='done'
