@@ -98,6 +98,7 @@ def weekDay(x):
 
 
 
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -182,7 +183,7 @@ def calculate(id,date):
     wd = []
     for i in a:
         wd.append(weekDay(i.DailySalary.date.weekday()))
-    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate,wd=wd)
+    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate, wd=wd)
 
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
@@ -195,8 +196,9 @@ def newsalary(id):
         for x in range(days):
             ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
             wd = ddd.weekday()
-            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'</td><td>1000</td><td><input name="txt" class="form-control"' \
-                                       ' id="row'+str(x+1)+'" value="1000"></td></tr>'
+            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'' \
+                   '</td><td>1000</td><td><input name="txt" class="form-control"' \
+                   ' id="row'+str(x+1)+'" value="1000"></td></tr>'
             new += html
         return jsonify(new=new)
     else:
@@ -219,7 +221,7 @@ def pay():
         day.append(request.form['day'+str(i+1)])
         date_string = year+col+month+col+str(i+1)
         ds = datetime.strptime(date_string, "%Y:%m:%d")
-        b = DailySalary(employeeid, ds, day[i] )
+        b = DailySalary(employeeid, ds, day[i])
         db.session.add(b)
     a = Salary(employeeid, sumdate, sum)
     db.session.add(a)

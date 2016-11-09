@@ -19,9 +19,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    	{% set count=0 %}
                                         {% for i in wages %}
+                                        
                                         <tr>
-                                        <td>{{i.DailySalary.date.strftime("%-d")}}</td>
+                                        <td>{{i.DailySalary.date.strftime("%-d")}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{wd[count]|safe}}</td>
+                                        {% set count = count+1 %}
                                         <td>1000</td>
                                         <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.amount}}"></td>
                                         </tr>
