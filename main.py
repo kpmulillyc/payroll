@@ -57,7 +57,7 @@ class Employee(db.Model):
 
 class Salary(db.Model):
     __tablename__='salary'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
     date = db.Column(db.Date)
     amount = db.Column(db.DECIMAL(10,2))
@@ -70,13 +70,17 @@ class Salary(db.Model):
 
 class DailySalary(db.Model):
     __tablename__='dailySalary'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    basicSalary = db.Column(db.DECIMAL(10,2))
+    OT = db.column(db.DECIMAL(10,2))
     date = db.Column(db.Date)
     amount = db.Column(db.DECIMAL(10,2))
 
-    def __init__(self, employeeid,date,amount):
+    def __init__(self, employeeid,basicSalary,OT,date,amount):
         self.employeeid = employeeid
+        self.basicSalary = basicSalary
+        self.OT = OT
         self.date = date
         self.amount = amount
 
@@ -95,7 +99,6 @@ def weekDay(x):
         return "Sat"
     elif x == 6:
         return "<font color='red'>Sun</font>"
-
 
 
 
@@ -197,8 +200,10 @@ def newsalary(id):
             ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
             wd = ddd.weekday()
             html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'' \
-                   '</td><td>1000</td><td><input name="txt" class="form-control"' \
-                   ' id="row'+str(x+1)+'" value="1000"></td></tr>'
+                   '</td><td><input class="form-control"' \
+                   ' value="0" id="bs'+str(x+1)+'"</td><td><input class="form-control"' \
+                   ' id="ot'+str(x+1)+'" value="0"></td><td><input name="txt" class="form-control"' \
+                   ' id="ds'+str(x+1)+'"</td></tr>'
             new += html
         return jsonify(new=new)
     else:
