@@ -126,16 +126,20 @@ $(function() {
         $('*[id^="bs"]').each(function(){
             this.value = $("#fbs").val();
         });
-        {% for i in range(30) %}
-        var s = document.getElementById(ds{{i+1}});
-        s.value = parseFloat($("#bs{{i+1}}").val()) + parseFloat($("#ot{{i+1}}").val());
+        var indexa = 1;
+         function myFunc(variable){
+            var s = document.getElementById(variable);
+            s.value = parseFloat($("#bs"+indexa).val()) + parseFloat($("#ot"+indexa).val());
+        }  
+        {% for i in range(31) %}
+        var yeah = "ds"+ indexa;
+        myFunc(yeah);
+        indexa = indexa + 1;
+        console.log(indexa);
         {% endfor %}
 });
 });
- function myFunc(variable){
-            var s = document.getElementById(variable);
-            s.value = parseFloat($("#bs1").val()) + parseFloat($("#ot1").val());
-        }   
+
 
 function calculateSum() {
     var sum = 0;
