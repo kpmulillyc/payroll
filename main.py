@@ -199,11 +199,10 @@ def newsalary(id):
         for x in range(days):
             ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
             wd = ddd.weekday()
-            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'' \
-                   '</td><td><input class="form-control"' \
-                   ' value="0" id="bs'+str(x+1)+'"</td><td><input class="form-control"' \
-                   ' id="ot'+str(x+1)+'" value="0"></td><td><input name="txt" class="form-control"' \
-                   ' id="ds'+str(x+1)+'"</td></tr>'
+            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'</td>'\
+                   '<td><input class="form-control" value ="0" id="bs'+str(x+1)+'"></td>'\
+                   '<td><input class="form-control" value ="0" id="ot'+str(x+1)+'"></td>'\
+                   '<td><input name="txt" class="form-control" value ="0" id="ds'+str(x+1)+'"></td></tr>'
             new += html
         return jsonify(new=new)
     else:
