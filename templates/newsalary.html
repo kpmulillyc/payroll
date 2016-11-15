@@ -91,19 +91,31 @@ $(function(){
             	calculateSum();
             },
         });
+$(document).on("keydown keyup","#salary",function(){
+    {% set indexb = 0 %}
+    $('*[id^="bs"]').each(function(){
+            this.value = parseFloat($("#salary").val());
+            {% set indexb = indexb + 1 %}
+            console.log({{indexb}});
+        });
+    
 
+});     
     });
 
 	
 	$("#btn").click(function(){
+        console.log({{indexb}});
 		$.ajax({
 			url: "/pay",
 			type: 'POST',
 			data: {
 				month: $("#month").val(),
 				year: $("#year").val(),
-				{% for i in range(31) %}
-				day{{i+1}}: $("#row{{i+1}}").val(),
+				{% for i in range(indexb) %}
+                bs{{i+1}}:$("#bs{{i+1}}").val(),  
+                ot{{i+1}}:$("#ot{{i+1}}").val(),
+				ds{{i+1}}: $("#ds{{i+1}}").val(),
 				{% endfor %}
 				days: daysInMonth($("#month").val(), $("#year").val()),
 				employeeid: employeeid,
@@ -113,17 +125,12 @@ $(function(){
 			alert(data.bbb);
 			},
 		});
-	});
+
+
 });
-$(function() {
     //this calculates values automatically 
 
-$(document).on("keydown keyup","#salary",function(){
-	$('*[id^="bs"]').each(function(){
-            this.value = parseFloat($("#salary").val());
-        });
 
-});		
 
 
 		

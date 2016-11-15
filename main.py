@@ -62,7 +62,8 @@ class Salary(db.Model):
     date = db.Column(db.Date)
     amount = db.Column(db.DECIMAL(10,2))
 
-    def __init__(self, employeeid,date,amount):
+    def __init__(self,id, employeeid,date,amount):
+        self.id = id
         self.employeeid = employeeid
         self.date = date
         self.amount = amount
@@ -72,17 +73,21 @@ class DailySalary(db.Model):
     __tablename__='dailySalary'
     id = db.Column(db.String(255), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    overTime = db.Column(db.DECIMAL(10, 2))
     basicSalary = db.Column(db.DECIMAL(10,2))
-    OT = db.column(db.DECIMAL(10,2))
     date = db.Column(db.Date)
-    amount = db.Column(db.DECIMAL(10,2))
-
-    def __init__(self, employeeid,basicSalary,OT,date,amount):
+    dailySalary = db.Column(db.DECIMAL(10,2))
+    def __init__(self,id, employeeid,overTime,basicSalary,date,dailySalary):
+        self.id = id
         self.employeeid = employeeid
+        self.overTime = overTime
         self.basicSalary = basicSalary
-        self.OT = OT
         self.date = date
-        self.amount = amount
+        self.dailySalary = dailySalary
+
+
+
+
 
 def weekDay(x):
     if x == 0:
@@ -211,8 +216,9 @@ def newsalary(id):
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
-
-    day=[]
+    bs=[]
+    ot=[]
+    ds=[]
     employeeid = request.form['employeeid']
     month = request.form['month']
     year = request.form['year']
@@ -221,13 +227,17 @@ def pay():
     days=int(request.form['days'])
     sumdatestr = year+col+month+col+"1"
     sumdate = datetime.strptime(sumdatestr, "%Y:%m:%d")
+    id = str(employeeid+sumdatestr)
+    a = Salary(id, employeeid, sumdate, sum)
     for i in range(days):
-        day.append(request.form['day'+str(i+1)])
+        bs.append(request.form['bs' + str(i + 1)])
+        ot.append(request.form['ot' + str(i + 1)])
+        ds.append(request.form['ds'+str(i+1)])
         date_string = year+col+month+col+str(i+1)
-        ds = datetime.strptime(date_string, "%Y:%m:%d")
-        b = DailySalary(employeeid, ds, day[i])
+        daystr = datetime.strptime(date_string, "%Y:%m:%d")
+        id =  str(daystr) + "-" + str(employeeid)
+        b = DailySalary(id,employeeid, ot[i],bs[i], daystr, ds[i])
         db.session.add(b)
-    a = Salary(employeeid, sumdate, sum)
     db.session.add(a)
     db.session.commit()
     bbb='done'
