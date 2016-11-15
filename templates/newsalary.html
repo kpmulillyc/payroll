@@ -87,7 +87,7 @@ $(function(){
     			
             	$("#body").html(data.new);
             	$("#date").html("Salary for "+month+"/"+year);
-                $("#bsdiv").html("Basic Salary: <input class=form-control id=fbs value=0>");
+                $("#bsdiv").html("Basic Salary: <input class='form-control' id='salary' value ='0' >");
             	calculateSum();
             },
         });
@@ -117,27 +117,25 @@ $(function(){
 });
 $(function() {
     //this calculates values automatically 
-    calculateSum();
 
-    $(document).on("keydown keyup","input[name=txt]", function() {
+$(document).on("keydown keyup","#salary",function(){
+	$('*[id^="bs"]').each(function(){
+            this.value = parseFloat($("#salary").val());
+        });
+
+});		
+
+
+		
+
+    $(document).on("keydown keyup",function() {
+    			var indexa = 1;
+		$('*[id^="ds"]').each(function(){
+			this.value = (parseFloat($("#bs"+indexa).val())+ parseFloat($("#ot"+indexa).val())).toFixed(2);
+			indexa += 1;
+		});
         calculateSum();
     });
-    $(document).on("keydown keyup",$("#fbs"),function(){
-        $('*[id^="bs"]').each(function(){
-            this.value = $("#fbs").val();
-        });
-        var indexa = 1;
-         function myFunc(variable){
-            var s = document.getElementById(variable);
-            s.value = parseFloat($("#bs"+indexa).val()) + parseFloat($("#ot"+indexa).val());
-        }  
-        {% for i in range(31) %}
-        var yeah = "ds"+ indexa;
-        myFunc(yeah);
-        indexa = indexa + 1;
-        console.log(indexa);
-        {% endfor %}
-});
 });
 
 
