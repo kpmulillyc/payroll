@@ -74,13 +74,15 @@ class DailySalary(db.Model):
     id = db.Column(db.String(255), primary_key=True)
     employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
     overTime = db.Column(db.DECIMAL(10, 2))
+    otHours = db.Column(db.DECIMAL(10,2))
     basicSalary = db.Column(db.DECIMAL(10,2))
     date = db.Column(db.Date)
     dailySalary = db.Column(db.DECIMAL(10,2))
-    def __init__(self,id, employeeid,overTime,basicSalary,date,dailySalary):
+    def __init__(self,id, employeeid,overTime,otHours,basicSalary,date,dailySalary):
         self.id = id
         self.employeeid = employeeid
         self.overTime = overTime
+        self.otHours = otHours
         self.basicSalary = basicSalary
         self.date = date
         self.dailySalary = dailySalary
@@ -204,10 +206,18 @@ def newsalary(id):
         for x in range(days):
             ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
             wd = ddd.weekday()
-            html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'</td>'\
-                   '<td><input class="form-control" value ="0" id="bs'+str(x+1)+'"></td>'\
-                   '<td><input class="form-control" value ="0" id="ot'+str(x+1)+'"></td>'\
-                   '<td><input name="txt" class="form-control" value ="0" id="ds'+str(x+1)+'"></td></tr>'
+            if wd is not 6:
+                html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1.5"></td>'\
+                       '<td><input class="form-control" value ="0.00" id="bs'+str(x+1)+'"></td>'\
+                       '<td><input class="form-control" value ="0.00" id="ot'+str(x+1)+'" readonly></td>' \
+                       '<td><input class="form-control" value ="0" name="hot" id="hot'+str(x+1)+'"></td>' \
+                       '<td><input class="form-control" name="txt" value ="0.00" id="ds'+str(x+1)+'" readonly></td></tr>'
+            else:
+                html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="2"></td>'\
+                    '<td><input class="form-control" value ="0.00" id="bs' + str(x+1) + '"></td>' \
+                    '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
+                    '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
+                    '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
             new += html
         return jsonify(new=new)
     else:
@@ -219,6 +229,7 @@ def pay():
     bs=[]
     ot=[]
     ds=[]
+    hot=[]
     employeeid = request.form['employeeid']
     month = request.form['month']
     year = request.form['year']
@@ -227,16 +238,17 @@ def pay():
     days=int(request.form['days'])
     sumdatestr = year+col+month+col+"1"
     sumdate = datetime.strptime(sumdatestr, "%Y:%m:%d")
-    id = str(employeeid+sumdatestr)
+    id = str(employeeid+'-'+sumdatestr)
     a = Salary(id, employeeid, sumdate, sum)
     for i in range(days):
         bs.append(request.form['bs' + str(i + 1)])
         ot.append(request.form['ot' + str(i + 1)])
         ds.append(request.form['ds'+str(i+1)])
+        hot.append(request.form['hot'+str(i+1)])
         date_string = year+col+month+col+str(i+1)
         daystr = datetime.strptime(date_string, "%Y:%m:%d")
         id =  str(daystr) + "-" + str(employeeid)
-        b = DailySalary(id,employeeid, ot[i],bs[i], daystr, ds[i])
+        b = DailySalary(id,employeeid, ot[i],hot[i],bs[i], daystr, ds[i])
         db.session.add(b)
     db.session.add(a)
     db.session.commit()

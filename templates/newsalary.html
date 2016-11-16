@@ -1,6 +1,5 @@
 {% extends "index.html" %}
 {% block body %}
-
                 <div class="row">
                 <div class="col-lg-6">
                     <div class="panel panel-default">
@@ -27,6 +26,7 @@
                                             <th>Day of month</th>
                                             <th>Basic Salary</th>
                                             <th>OT</th>
+                                            <th>OT hours</th>
                                             <th>Amount</th>
                                         </tr>
                                     </thead>
@@ -87,35 +87,41 @@ $(function(){
     			
             	$("#body").html(data.new);
             	$("#date").html("Salary for "+month+"/"+year);
-                $("#bsdiv").html("Basic Salary: <input class='form-control' id='salary' value ='0' >");
+                $("#bsdiv").html("Basic Salary: <input class='form-control' id='salary' value ='0.00' >");
             	calculateSum();
             },
         });
-$(document).on("keydown keyup","#salary",function(){
-    {% set indexb = 0 %}
+
+    });
+  $(document).on("keydown keyup","#salary",function(){
     $('*[id^="bs"]').each(function(){
-            this.value = parseFloat($("#salary").val());
-            {% set indexb = indexb + 1 %}
-            console.log({{indexb}});
+            this.value = parseFloat($("#salary").val()).toFixed(2);
         });
     
 
-});     
-    });
+});
 
+
+});     
+
+    $(document).on("keydown keyup",function() {
+        OT();
+        daySum();    
+        calculateSum();    
+    });
 	
 	$("#btn").click(function(){
-        console.log({{indexb}});
 		$.ajax({
 			url: "/pay",
 			type: 'POST',
 			data: {
 				month: $("#month").val(),
 				year: $("#year").val(),
-				{% for i in range(indexb) %}
+				{% for i in range(31) %}
                 bs{{i+1}}:$("#bs{{i+1}}").val(),  
                 ot{{i+1}}:$("#ot{{i+1}}").val(),
 				ds{{i+1}}: $("#ds{{i+1}}").val(),
+                hot{{i+1}}: $("#hot{{i+1}}").val(),
 				{% endfor %}
 				days: daysInMonth($("#month").val(), $("#year").val()),
 				employeeid: employeeid,
@@ -133,17 +139,6 @@ $(document).on("keydown keyup","#salary",function(){
 
 
 
-		
-
-    $(document).on("keydown keyup",function() {
-    			var indexa = 1;
-		$('*[id^="ds"]').each(function(){
-			this.value = (parseFloat($("#bs"+indexa).val())+ parseFloat($("#ot"+indexa).val())).toFixed(2);
-			indexa += 1;
-		});
-        calculateSum();
-    });
-});
 
 
 function calculateSum() {
@@ -162,5 +157,20 @@ function calculateSum() {
 
     $("#sum1").val(sum.toFixed(2));
 }
+function OT(){
+    var indexb = 1;
+    $('*[id^="ot"]').each(function(){
+            this.value = (parseFloat($("#bs"+indexb).val())/8*parseFloat($("#ratio"+indexb).val())*parseFloat($("#hot"+indexb).val())).toFixed(2);
+            indexb += 1;
+        });
+ }   
+ function daySum() {
+     var indexa = 1;
+        $('*[id^="ds"]').each(function(){
+            this.value = (parseFloat($("#bs"+indexa).val())+ parseFloat($("#ot"+indexa).val())).toFixed(2);
+            indexa += 1;
+           
+        });
+ }
 </script>
 {% endblock %}
