@@ -2,8 +2,9 @@ from flask import Flask, render_template,request,jsonify,url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import  and_
 from sqlalchemy.sql import func
-import uniout
+from ics import icalendar
 from datetime import datetime
+from urllib import urlopen
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:kingsford@localhost/payroll?charset=utf8'
@@ -88,8 +89,28 @@ class DailySalary(db.Model):
         self.dailySalary = dailySalary
 
 
+def Holiday(x):
+    url = 'http://www.1823.gov.hk/common/ical/tc.ics'
+    c = icalendar.Calendar(urlopen(url).read().decode('utf-8'))
+    e= icalendar.Event()
+    result = False
+    e.begin = x
+    for i in c.events:
+        if e.begin == i.begin:
+            result = True
+            break
+    return result
 
-
+def showHoliday(x):
+    url = 'http://www.1823.gov.hk/common/ical/tc.ics'
+    c = icalendar.Calendar(urlopen(url).read().decode('utf-8'))
+    e = icalendar.Event()
+    e.begin = x
+    display = ""
+    for i in c.events:
+        if e.begin == i.begin:
+            display = i.name
+    return display
 
 def weekDay(x):
     if x == 0:
@@ -205,8 +226,16 @@ def newsalary(id):
         new = ''
         for x in range(days):
             ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
+            hddd = datetime.strftime(ddd,"%Y%m%d")+" 00:00:00"
             wd = ddd.weekday()
-            if wd is not 6:
+            if Holiday(hddd):
+                html = '<tr><td>' + str(x + 1) + '&nbsp;&nbsp;&nbsp; <font color="red">'+showHoliday(hddd)+'</font>'\
+                    '<input type="hidden" id="ratio' + str(x + 1) + '" value="2"></td>' \
+                    '<td><input class="form-control" value ="0.00" id="bs' + str(x + 1) + '"></td>'\
+                    '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
+                    '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
+                    '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
+            elif wd is not 6:
                 html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1.5"></td>'\
                        '<td><input class="form-control" value ="0.00" id="bs'+str(x+1)+'"></td>'\
                        '<td><input class="form-control" value ="0.00" id="ot'+str(x+1)+'" readonly></td>' \
