@@ -15,6 +15,8 @@
                                         <tr>
                                         	<th>Day of month</th>
                                             <th>Basic Salary</th>
+                                            <th>OT</th>
+                                            <th>OT hours</th>
                                             <th>Amount</th>
                                         </tr>
                                     </thead>
@@ -25,8 +27,10 @@
                                         <tr>
                                         <td>{{i.DailySalary.date.strftime("%-d")}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{wd[count]|safe}}</td>
                                         {% set count = count+1 %}
-                                        <td>1000</td>
-                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.amount}}"></td>
+                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.basicSalary}}"></td>
+                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.overTime}}"></td>
+                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.otHours}}"></td>
+                                        <td><input class="form-control" id="a" name="txt" value="{{i.DailySalary.dailySalary}}"></td>
                                         </tr>
                                      {% endfor %}
                                     </tbody>
@@ -55,7 +59,7 @@
 <div class="row">
                 <div class="col-lg-6">
                     <div class="panel panel-default">
-                   <input class="form-control" id="sum1">
+                   <input class="form-control" id="sum1" value="{{wages[0].Salary.amount}}">
 <button type="button" class="btn btn-success" id="btn">Submit</button>
 
 </div>
@@ -80,31 +84,6 @@ $(function(){
 			},
 		});
 	});
-});
-$(function() {
-    //this calculates values automatically 
-    calculateSum();
-
-    $("input[name^='txt']").on("keydown keyup", function() {
-        calculateSum();
-    });
-});
-
-function calculateSum() {
-    var sum = 0;
-    //iterate through each textboxes and add the values
-    $("input[name^='txt']").each(function() {
-        //add only if the value is number
-        if (!isNaN(this.value) && this.value.length != 0) {
-            sum += parseFloat(this.value);
-            $(this).css("background-color", "#FEFFB0");
-        }
-        else if (this.value.length != 0){
-            $(this).css("background-color", "red");
-        }
-    });
-
-    $("#sum1").val(sum.toFixed(2));
-}
+	});
 </script>
 {% endblock %}

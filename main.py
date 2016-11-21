@@ -209,7 +209,7 @@ def report(id):
 def calculate(id,date):
     date = datetime.strptime(date,"%Y-%m-%d")
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
-    a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),Employee.id==DailySalary.employeeid)).all()
+    a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),worker.id==DailySalary.employeeid)).all()
     strdate = datetime.strftime(date,"%m-%Y")
     wd = []
     for i in a:
@@ -224,31 +224,38 @@ def newsalary(id):
         month = str(request.form['month'])
         year = str(request.form['year'])
         new = ''
-        for x in range(days):
-            ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
-            hddd = datetime.strftime(ddd,"%Y%m%d")+" 00:00:00"
-            wd = ddd.weekday()
-            if Holiday(hddd):
-                html = '<tr><td>' + str(x + 1) + '&nbsp;&nbsp;&nbsp; <font color="red">'+showHoliday(hddd)+'</font>'\
-                    '<input type="hidden" id="ratio' + str(x + 1) + '" value="2"></td>' \
-                    '<td><input class="form-control" value ="0.00" id="bs' + str(x + 1) + '"></td>'\
-                    '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
-                    '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
-                    '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
-            elif wd is not 6:
-                html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1.5"></td>'\
-                       '<td><input class="form-control" value ="0.00" id="bs'+str(x+1)+'"></td>'\
-                       '<td><input class="form-control" value ="0.00" id="ot'+str(x+1)+'" readonly></td>' \
-                       '<td><input class="form-control" value ="0" name="hot" id="hot'+str(x+1)+'"></td>' \
-                       '<td><input class="form-control" name="txt" value ="0.00" id="ds'+str(x+1)+'" readonly></td></tr>'
-            else:
-                html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="2"></td>'\
-                    '<td><input class="form-control" value ="0.00" id="bs' + str(x+1) + '"></td>' \
-                    '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
-                    '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
-                    '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
-            new += html
-        return jsonify(new=new)
+        check = db.session.query(Employee,Salary).filter(and_(func.YEAR(Salary.date)==int(year),func.MONTH(Salary.date)==int(month),Salary.employeeid==worker.id)).first()
+        if check is not None:
+            exist= "Record already exist"
+            return jsonify(exist=exist,new=new)
+        else:
+            print "mo"
+            for x in range(days):
+                ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
+                hddd = datetime.strftime(ddd,"%Y%m%d")+" 00:00:00"
+                wd = ddd.weekday()
+                if Holiday(hddd):
+                    html = '<tr><td>' + str(x + 1) + '&nbsp;&nbsp;&nbsp; <font color="red">'+showHoliday(hddd)+'</font>'\
+                        '<input type="hidden" id="ratio' + str(x + 1) + '" value="2"></td>' \
+                        '<td><input class="form-control" value ="0.00" id="bs' + str(x + 1) + '"></td>'\
+                        '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
+                        '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
+                        '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
+                elif wd is not 6:
+                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1.5"></td>'\
+                           '<td><input class="form-control" value ="0.00" id="bs'+str(x+1)+'"></td>'\
+                           '<td><input class="form-control" value ="0.00" id="ot'+str(x+1)+'" readonly></td>' \
+                           '<td><input class="form-control" value ="0" name="hot" id="hot'+str(x+1)+'"></td>' \
+                           '<td><input class="form-control" name="txt" value ="0.00" id="ds'+str(x+1)+'" readonly></td></tr>'
+                else:
+                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="2"></td>'\
+                        '<td><input class="form-control" value ="0.00" id="bs' + str(x+1) + '"></td>' \
+                        '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
+                        '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
+                        '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
+                new += html
+                exist="New record"
+            return jsonify(exist=exist,new=new)
     else:
         return render_template("newsalary.html", worker=worker)
 
@@ -283,6 +290,7 @@ def pay():
     db.session.commit()
     bbb='done'
     return jsonify(bbb=bbb)
+
 
 
 @app.route('/addEmployee', methods=['POST','GET'])

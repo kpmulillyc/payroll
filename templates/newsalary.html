@@ -84,7 +84,7 @@ $(function(){
                 days: daysInMonth($("#month").val(), $("#year").val()),
             },
             success: function(data){
-    			
+    			alert(data.exist);
             	$("#body").html(data.new);
             	$("#date").html("Salary for "+month+"/"+year);
                 $("#bsdiv").html("Basic Salary: <input class='form-control' id='salary' value ='0.00' >");
@@ -101,8 +101,7 @@ $(function(){
 
 });
 
-
-});     
+    
 
     $(document).on("keydown keyup",function() {
         OT();
@@ -134,8 +133,8 @@ $(function(){
 
 
 });
-    //this calculates values automatically 
-
+    });
+   
 
 
 
