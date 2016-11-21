@@ -210,11 +210,16 @@ def calculate(id,date):
     date = datetime.strptime(date,"%Y-%m-%d")
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
     a = db.session.query(Employee,DailySalary).filter(and_(func.MONTH(DailySalary.date)==func.MONTH(date),func.YEAR(DailySalary.date)==func.YEAR(date),worker.id==DailySalary.employeeid)).all()
+    b = db.session.query(Salary).filter(and_(func.MONTH(Salary.date)==func.MONTH(date),func.YEAR(date)==func.YEAR(Salary.date),worker.id==Salary.employeeid)).all()
     strdate = datetime.strftime(date,"%m-%Y")
     wd = []
     for i in a:
-        wd.append(weekDay(i.DailySalary.date.weekday()))
-    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate, wd=wd)
+        hddd = datetime.strftime(i.DailySalary.date, "%Y%m%d") + " 00:00:00"
+        if Holiday(hddd):
+            wd.append('<font color="red">'+showHoliday(hddd)+'</font>')
+        else:
+            wd.append(weekDay(i.DailySalary.date.weekday()))
+    return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate, wd=wd, mt=b)
 
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
@@ -229,7 +234,6 @@ def newsalary(id):
             exist= "Record already exist"
             return jsonify(exist=exist,new=new)
         else:
-            print "mo"
             for x in range(days):
                 ddd = datetime.strptime((year+":"+month+":"+str(x+1)),"%Y:%m:%d")
                 hddd = datetime.strftime(ddd,"%Y%m%d")+" 00:00:00"
