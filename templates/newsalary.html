@@ -87,7 +87,7 @@ $(function(){
     			alert(data.exist);
             	$("#body").html(data.new);
             	$("#date").html("Salary for "+month+"/"+year);
-                $("#bsdiv").html("Basic Salary: <input class='form-control' id='salary' value ='0.00' >");
+                $("#bsdiv").html("<div class='row'><div class='col-lg-6'>Basic Salary: <input class='form-control' id='salary' value ='0.00' ></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp <div class='col-lg-6'>Annual Leave</div></div>");
             	calculateSum();
             },
         });

@@ -37,6 +37,7 @@ class Employee(db.Model):
                                 lazy='dynamic')
     dailySalaries = db.relationship('DailySalary', backref='employee',
                                lazy='dynamic')
+    annualLeave = db.relationship('AnnualLeave', backref='employee', lazy='dynamic')
     def __init__(self, cname, ename, hkid, address, phoneM, phoneH, salary, title, married, gender, eType, eDate, probation, probationDays, probationWeeks, probationMonths, remarks):
         self.cname = cname
         self.ename = ename
@@ -87,6 +88,24 @@ class DailySalary(db.Model):
         self.basicSalary = basicSalary
         self.date = date
         self.dailySalary = dailySalary
+
+class AnnualLeave(db.Model):
+    _tablename_='annualLeave'
+    id = db.Column(db.String(255), primary_key=True)
+    employeeid = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    date = db.Column(db.Date)
+    daysAllowed = db.Column(db.DECIMAL(10,3))
+    daysTaken = db.Column(db.DECIMAL(10, 3))
+    daysRemaining = db.Column(db.DECIMAL(10, 3))
+    def __init__(self,id,employeeid,date,daysAllowed,daysTaken,daysRemaining):
+        self.id = id
+        self.employeeid = employeeid
+        self.date = date
+        self.daysAllowed = daysAllowed
+        self.daysTaken = daysTaken
+        self.daysRemaining = daysRemaining
+
+
 
 
 def Holiday(x):
@@ -190,6 +209,15 @@ def employees():
 def wages():
     return render_template("wages.html", workers=Employee.query.all())
 
+@app.route('/al')
+def al():
+    return render_template("al.html", workers=Employee.query.all())
+
+@app.route('/lm/<id>')
+def lm(id):
+    worker = Employee.query.filter_by(hkid=id).first()
+    return render_template("leavemgm.html", worker=worker)
+
 @app.route('/employees/<id>')
 def edit(id):
     worker = Employee.query.filter_by(hkid=id).first()
@@ -240,19 +268,19 @@ def newsalary(id):
                 wd = ddd.weekday()
                 if Holiday(hddd):
                     html = '<tr><td>' + str(x + 1) + '&nbsp;&nbsp;&nbsp; <font color="red">'+showHoliday(hddd)+'</font>'\
-                        '<input type="hidden" id="ratio' + str(x + 1) + '" value="2"></td>' \
+                        '<input type="hidden" id="ratio' + str(x + 1) + '" value="1"></td>' \
                         '<td><input class="form-control" value ="0.00" id="bs' + str(x + 1) + '"></td>'\
                         '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
                         '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
                         '<td><input class="form-control" name="txt" value ="0.00" id="ds' + str(x + 1) + '" readonly></td></tr>'
                 elif wd is not 6:
-                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1.5"></td>'\
+                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="0.5"></td>'\
                            '<td><input class="form-control" value ="0.00" id="bs'+str(x+1)+'"></td>'\
                            '<td><input class="form-control" value ="0.00" id="ot'+str(x+1)+'" readonly></td>' \
                            '<td><input class="form-control" value ="0" name="hot" id="hot'+str(x+1)+'"></td>' \
                            '<td><input class="form-control" name="txt" value ="0.00" id="ds'+str(x+1)+'" readonly></td></tr>'
                 else:
-                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="2"></td>'\
+                    html = '<tr><td>'+str(x+1)+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+weekDay(wd)+'<input type="hidden" id="ratio'+str(x+1)+'" value="1"></td>'\
                         '<td><input class="form-control" value ="0.00" id="bs' + str(x+1) + '"></td>' \
                         '<td><input class="form-control" value ="0.00" id="ot' + str(x + 1) + '" readonly></td>' \
                         '<td><input class="form-control" value ="0" name="hot" id="hot' + str(x + 1) + '"></td>' \
