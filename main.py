@@ -249,6 +249,8 @@ def calculate(id,date):
             wd.append(weekDay(i.DailySalary.date.weekday()))
     return render_template("calculate.html", id = id, wages = a, worker= worker,date=strdate, wd=wd, mt=b)
 
+
+
 @app.route('/newsalary/<id>',methods = ['POST','GET'])
 def newsalary(id):
     worker = db.session.query(Employee).filter(Employee.hkid==id).first()
@@ -291,6 +293,20 @@ def newsalary(id):
     else:
         return render_template("newsalary.html", worker=worker)
 
+
+@app.route('/leave',methods=['POST','GET'])
+def leave():
+    add = request.form['add']
+    taken = request.form['taken']
+    workerid = request.form['workerid']
+    a = AnnualLeave.query.filter_by(employeeid=workerid).all()
+    if a == []:
+        data=add
+        print a
+    else:
+        data = taken
+        print "None"
+    return jsonify(data=data)
 
 @app.route('/pay', methods=['POST','GET'])
 def pay():
